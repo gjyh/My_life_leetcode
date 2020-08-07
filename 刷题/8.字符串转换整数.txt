@@ -1,0 +1,32 @@
+正则表达式的重要性！可以减少if else语句
+
+max(min(数字, 2**31 - 1), -2**31) #用来防止结果越界
+# a**b 即，a的b次方
+
+(*re.findall('^[\+\-]?\d+', s.lstrip()))
+# 通过*的unpack运算将它转换为元组，int(*result)其实就是 int(result[0])？？
+# ^ 代表匹配开头；？代表0个或非零个，+代表一个或多个；*代表0个或1个；.代表
+
+class Solution:
+    
+	def myAtoi(self, s: str) -> int:
+   
+# 解法一
+     		return max(min(int(*re.findall('^[\+\-]?\d+', s.lstrip())), 2**31 - 1), -2**31)
+
+
+
+# 解法二
+        s=str.lstrip()
+        if len(s)==0 or ('-+'.find(s[0])==-1 and s[0].isdigit()!=True):
+            return 0
+        j=1 if '-+'.find(s[0])==-1 else 2
+        r=0
+        while(j<=len(s)):
+            try:
+                r=int(s[0:j])
+                j=j+1
+            except:
+                break
+        return max(min(r,2**31-1),-2**31)
+# 测试结果：虽然代码一更简洁，但实际代码二运行时间更短。

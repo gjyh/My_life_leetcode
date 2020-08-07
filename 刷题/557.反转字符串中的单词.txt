@@ -1,0 +1,23 @@
+输入: "Let's take LeetCode contest"
+输出: "s'teL ekat edoCteeL tsetnoc" 
+
+线性扫描再运用切片反转 172ms
+
+集合操作两次反转 28ms
+return ' '.join(s.split(' ')[::-1])[::-1]  或
+return ' '.join([i[::-1] for i in s.split()])
+
+线性扫描用栈（出栈循环）反转 924ms
+
+注意：
+字符串是不能部分修改的。
+ 'str' object does not support item assignment
+temp = s.split(' ')
+        for i in temp:
+            i = i[::-1]
+是不成功的。
+	for i in range(len(temp)):
+            temp[i] = temp[i][::-1]
+是成功的。
+
+

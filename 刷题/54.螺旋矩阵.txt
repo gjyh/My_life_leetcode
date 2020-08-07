@@ -1,0 +1,62 @@
+# 54 螺旋矩阵
+
+我用了一种比较笨的方法。
+class Solution(object):
+    def spiralOrder(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: List[int]
+        """
+        m=len(matrix)
+        if m==0: return []
+        if m==1:
+            return matrix[0]
+        n=len(matrix[0])
+        #start=(0,0)
+        i=0; ii=jj=0
+        wholemax=m*n
+        whole=0;l=[]
+        while whole<wholemax and m-i>0 and n-i>0:
+            nummax=(m-i)*(n-i)-(m-2-i)*(n-2-i) if m-2-i>=0 and n-2-i>=0 else (m-i)*(n-i)
+            num=0; 
+            while num<nummax:
+                l.append(matrix[ii][jj])
+                num+=1
+                if ii==i and jj<n-1:
+                    jj+=1
+                elif jj==n-1 and ii<m-1:
+                    ii+=1
+                elif ii==m-1 and jj>i:
+                    jj-=1
+                elif jj==i and ii>i:
+                    ii-=1
+            whole+=num
+            ii=jj=i=i+1
+            m-=1; n-=1
+        return l
+用时16ms，打败了86%的人。但是代码看起来不太简洁。
+
+自己写的思路太乱了。
+第二次碰到这个题竟然没通过。
+
+class Solution:
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        if not matrix or not matrix[0]:
+            return list()
+        
+        rows, columns = len(matrix), len(matrix[0])
+        order = list()
+        left, right, top, bottom = 0, columns - 1, 0, rows - 1
+        while left <= right and top <= bottom:
+            for column in range(left, right + 1):
+                order.append(matrix[top][column])
+            for row in range(top + 1, bottom + 1):
+                order.append(matrix[row][right])
+            if left < right and top < bottom:
+                for column in range(right - 1, left, -1):
+                    order.append(matrix[bottom][column])
+                for row in range(bottom, top, -1):
+                    order.append(matrix[row][left])
+            left, right, top, bottom = left + 1, right - 1, top + 1, bottom - 1
+        return order
+

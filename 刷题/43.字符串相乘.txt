@@ -1,0 +1,68 @@
+不能使用任何标准库的大数类型（比如 BigInteger）或直接将输入转换为整数来处理。
+
+一.这可能是一种犯规的方法，28MS.
+自定义方法转换为数字
+def multiply(self, num1, num2):
+        def getNum(num):
+            ans = 0
+            for i, num in enumerate(num[::-1]):
+                ans += 10**i * (ord(num) - 48)
+            return ans
+        return str(getNum(num1) * getNum(num2))
+
+1.函数可以放在函数里面
+2.enumerate函数
+enumerate() 函数用于将一个可遍历的数据对象，同时列出数据下标和数据。这里的下标是遍历的次序，不是索引。
+
+
+二.普通竖式 436MS
+
+ # num1 存长度较短的数，作为外围循环
+        if num1=='0' or num2== '0':
+            return '0'
+        if len(num1)>len(num2):
+            num1,num2=num2,num1
+        result=0
+        for i1 in range(len(num1)-1,-1,-1):    # 倒着做乘法
+            carry = 0 # 进位 
+            rs = '' # 字符串存储 num2*num1[i1]的结果
+            for i2 in range(len(num2)-1,-1,-1):
+                isum=int(num1[i1]) * int(num2[i2]) +carry
+                rs=str(isum % 10)+rs
+                carry = isum // 10
+            if (carry !=0):
+                rs=str(carry)+rs
+            result+=int(rs)* 10** (len(num1)-1-i1)   #每一位的结果
+
+        return str(result)
+
+
+三.优化竖式 96MS
+
+num1[i] x num2[j] 的结果为 tmp(位数为两位，"0x","xy"的形式)，其第一位位于 res[i+j]，第二位位于 res[i+j+1]。
+
+
+索引低的是高位。res[i+j]是高位，只需加上进位。
+从右往左计算。
+
+class Solution(object):
+    def multiply(self, num1, num2):
+        """
+        :type num1: str
+        :type num2: str
+        :rtype: str
+        """
+        #即实现整数乘法
+
+        if num1=='0' or num2== '0':
+            return '0'
+        result=[0 for i1 in range(len(num1)+len(num2))]
+        for i1 in range(len(num1)-1,-1,-1):    
+            for i2 in range(len(num2)-1,-1,-1):
+                isum=(ord(num1[i1])-48) * (ord(num2[i2])-48) +result[i1+i2+1]
+                result[i1+i2+1]=isum % 10
+                result[i1+i2] += isum // 10
+        
+        return ''.join(map(str,result)).lstrip('0')
+
+最初运行时间是248MS，将int（）转换为ord（）-48，减少到了96MS。

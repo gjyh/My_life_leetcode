@@ -1,0 +1,35 @@
+解法：
+	1.库函数 itertools.permutations
+
+	2.回溯法
+class Solution(object):
+    def permute(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        #return list(itertools.permutations(nums))
+
+        res=[]
+        def backtrack(nums,temp):
+            if not nums:
+                res.append(temp)
+            for i in range(0,len(nums)):
+                backtrack(nums[:i]+nums[i+1:],temp+[nums[i]])
+        
+        backtrack(nums,[])
+        return res
+
+同类型题目：
+
+39.组合总和
+
+40. 组合总和 II
+
+46. 全排列
+
+47. 全排列 II
+
+78. 子集
+
+90. 子集 II

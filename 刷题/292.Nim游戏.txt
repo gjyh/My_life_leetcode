@@ -1,0 +1,37 @@
+1.假设一推里面有n个石头，每次可以取 1~m 个石头。
+若n=k*(m+1)，则后取着胜，反之，存在先取者获胜的取法。n%(m+1)==0. 先取者必败。
+
+2.(扩展)：尼姆博弈
+有3堆各若干个物品，两个人轮流从某一堆取任意多的物品，规定每次至少取1个，多者不限，最后取光者得胜。
+
+获胜情况对先取者的讨论：
+异或结果p为0，先取者必败，无获胜方法。后取者获胜；
+结果不为0，先取者有获胜的取法。找到与p最高位1相同的s[i]
+	String stringArray[] = string.split(",");
+12         int num[] = new int[stringArray.length];
+13         for (int i = 0; i < stringArray.length; i++) {
+14             num[i] = Integer.parseInt(stringArray[i]);
+15         }
+16         int a = num[0];
+17         int b = num[1];
+18         int c = num[2];
+	   int bool = a ^ b ^ c;
+20         if (bool == 0)
+21             System.out.print(1);
+22         else {
+23             if ((a ^ b) < c) {
+24                 System.out.print("C," + (c - (a ^ b)));
+25             }
+26             if ((a ^ c) < b) {
+27                 System.out.print("B," + (b - (a ^ c)));
+28             }
+29             if ((b ^ c) < a) {
+30                 System.out.print("A," + (a -(b ^ c)));
+31             }
+32         }
+
+3.拓展
+
+任给N堆石子,两人轮流从任一堆中任取(每次只能取自一堆),取最后一颗石子的人获胜，问先取的人如何获胜？
+
+根据上面所述，N个数异或即可。如果开始的时候T＝0，那么先取者必败，如果开始的时候T>0，那么只要每次取出石子使得T＝0，即先取者有获胜的方法。

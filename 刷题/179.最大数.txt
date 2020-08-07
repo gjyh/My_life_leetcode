@@ -1,0 +1,29 @@
+class Solution(object):
+    def largestNumber(self, nums):
+
+
+
+
+        """
+        :type nums: List[int]
+        :rtype: str
+        """
+        largest_num = ''.join(sorted(map(str, nums), key=LargerNumKey))
+        return '0' if largest_num[0] == '0' else largest_num
+	#map(function, iterable, …)
+
+class LargerNumKey(str):
+    def __lt__(x, y):  #操作符重载，方法名不能改
+        return x+y > y+x
+
+# def bi(i):  
+#   if i == 0:        
+#     return 0    
+#   s = 0  
+#   k = i  
+#   while i >= 1: 
+#       i=i/ 10 
+#       s+=1 
+#   return k /( 10 **s -1)
+
+# key=bi

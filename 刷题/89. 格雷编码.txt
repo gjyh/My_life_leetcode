@@ -1,0 +1,72 @@
+要点：
+1.格雷码 g与r的规律
+设 n阶格雷码集合为 G(n)，则 G(n+1) 阶格雷码为：
+	给 G(n) 阶格雷码每个元素二进制形式前面添加0，得到 G'(n)；
+	设 G(n)集合倒序（镜像）为R(n)，给R(n) 每个元素二进制形式前面添加1，得到 R'(n)；
+	拼接两个集合即可得到下一阶格雷码。
+2.在前面加1的方法
+	2.1 位运算，二进制
+	2.2 ans.push_back(ans[i] + pow(2,n-1))
+
+注意自己重写一遍！易错！
+
+原始代码：
+class Solution(object):
+    def grayCode(self, n):
+        """
+        :type n: int
+        :rtype: List[int]
+        """
+        if n==0:
+            return [0]
+        if n==1:
+            return [0,1]
+        else:
+            gray=self.grayCode(n-1)
+            for i in range(len(gray)):
+                j=bin(gray[i])[2:]
+                gray[i]='0'*(n-1-len(j))+j
+            g=[int('0'+i,2) for i in gray]
+            r=[int('1'+i,2) for i in gray[::-1]]
+            g.extend(r)
+            return g
+
+优化后：加0用它本身即可
+class Solution(object):
+    def grayCode(self, n):
+        """
+        :type n: int
+        :rtype: List[int]
+        """
+        if n==0:
+            return [0]
+        if n==1:
+            return [0,1]
+        else:
+            gray=self.grayCode(n-1)
+            length=len(gray)
+            for i in range(length-1,-1,-1):# range是生成器不是切片
+                j=bin(gray[i])[2:]
+                gray.append(int('1'+'0'*(n-1-len(j))+j,2))    
+        return gray
+再度优化：加1用2的次幂计算
+class Solution(object):
+    def grayCode(self, n):
+        """
+        :type n: int
+        :rtype: List[int]
+        """
+        if n==0:
+            return [0]
+        if n==1:
+            return [0,1]
+        else:
+            gray=self.grayCode(n-1)
+            length=len(gray)
+            for i in range(length-1,-1,-1):# range是生成器不是切片
+                gray.append(gray[i]+2**(n-1))
+        return gray
+执行用时 :8 ms, 在所有 Python 提交中击败了99.57%的用户
+
+简便方法：（未看）
+return [i ^ i >> 1  for i in range(2 ** n)]

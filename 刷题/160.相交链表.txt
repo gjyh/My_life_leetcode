@@ -1,0 +1,43 @@
+这一题最初只想到了暴力法，超时。
+
+1.哈希表
+存储一个链表中所有节点的地址。
+
+代码：
+	d=dict()
+        if not headA or not headB:
+            return None
+        while headA!=None:
+            d[id(headA)]=1
+            headA=headA.next
+        while headB!=None:
+            if id(headB) in d:
+                return headB
+            headB=headB.next
+        return None
+用时：220ms
+
+2.双指针，链表拼接。
+如果两个链表有相交，最后一个元素一定是相同的。
+	A,B = headA,headB
+        if not headA or not headB:
+            return None
+        while 1:
+            if A==B:
+                return A
+            A=A.next
+            B=B.next 
+            if A==None and B==None:
+                return None
+            if A==None:
+                A=headB
+            if B==None:
+                B=headA
+用时：196ms
+
+同样的思路，精简代码:
+	A,B = headA,headB
+        while A!=B:
+            A= A.next if A else headB
+            B= B.next if B else headA
+        return A
