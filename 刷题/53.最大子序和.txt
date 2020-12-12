@@ -1,0 +1,26 @@
+这一题非常巧妙。
+
+1.动态规划法。常数空间，沿数组移动并在原数组修改。
+
+解法：
+class Solution(object):
+    def maxSubArray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        for i in range(1,len(nums)):
+            nums[i]=nums[i]+ max(nums[i-1],0)
+        return max(nums)
+
+代码简洁，执行用时 :32 ms, 在所有 Python 提交中击败了100.00%的用户。需要多体会。
+
+2.贪心 28ms
+每一步都选择最佳方案，到最后就是全局最优的方案。
+class Solution(object):
+    def maxSubArray(self, nums):
+        imax=icurr=nums[0]
+        for i in range(1,len(nums)):
+            icurr=max(nums[i],nums[i]+icurr)
+            imax=max(icurr,imax)
+        return imax   	

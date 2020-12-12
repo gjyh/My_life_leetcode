@@ -1,0 +1,85 @@
+124.二叉树中的最大路径和
+
+当前作用域局部变量->外层作用域变量->当前模块中的全局变量->python内置变量 。
+
+global关键字用来在函数或其他局部作用域中使用全局变量。但是如果不修改全局变量也可以不使用global关键字。
+
+nonlocal关键字用来在函数或其他作用域中使用外层(非全局)变量。
+# 奇怪的是解题过程中nonlocal好像无法识别
+最后采用的是self.max_sum
+max_sum = float('-inf') 负无穷
+函数：
+def max_gain(node):
+	if not node:
+		return 0
+
+	left_gain=max(max_gain(node.left),0)
+	right_gain=max(max_gain(node.right),0)
+
+	price=node.val+ left_gain + right_gain # 当前节点作为链接节点。开辟新路径
+	max_sum=max(price,max_sum)
+
+	return node.val+max(left_gain,right_gain) # 递归返回的到当前节点的一条最大路径
+全部代码：
+class Solution:
+       
+    max_num=float('-inf')
+    def maxPathSum(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        def max_gain(node):
+            #global max_num
+            if not node:
+                return 0
+
+            # max sum on the left and right sub-trees of node
+            left_gain = max(max_gain(node.left), 0)
+            right_gain = max(max_gain(node.right), 0)
+            
+            # the price to start a new path where `node` is a highest node
+            price_newpath = node.val + left_gain + right_gain
+            
+            # update max_sum if it's better to start a new path
+            self.max_num = max(self.max_num, price_newpath)
+        
+            # for recursion :
+            # return the max gain if continue the same path
+            return node.val + max(left_gain, right_gain)
+        
+        max_gain(root)
+        return self.max_num
+
+一种更简洁代码的写法：
+class Solution:
+    def maxPathSum(self, root, ok=True):       
+        if not root: return 0
+        l, r = self.maxPathSum(root.left, False), self.maxPathSum(root.right, False)
+        self.max = max(getattr(self, 'max', float('-inf')), l + root.val + r)
+        return self.max if ok else max(root.val + max(l, r), 0)
+
+getattr(object, name[,default])
+获取对象object的属性或者方法，如果存在打印出来，如果不存在，打印出默认值，默认值可选。
+需要注意的是，如果是返回的对象的方法，返回的是方法的内存地址，如果需要运行这个方法，
+可以在后面添加一对括号。
+可以理解为getattr(object,name)和object.name是一样的功能。
+函数运行实例：
+ 1 >>>class test():
+ 2 ...     name="xiaohua"
+ 3 ...     def run(self):
+ 4 ...             return "HelloWord"
+ 5 ...
+ 6 >>> t=test()
+ 7 >>> getattr(t, "name") #获取name属性，存在就打印出来。
+ 8 'xiaohua'
+ 9 >>> getattr(t, "run")  #获取run方法，存在就打印出方法的内存地址。
+10 <bound method test.run of <__main__.test instance at 0x0269C878>>
+11 >>> getattr(t, "run")()  #获取run方法，后面加括号可以将这个方法运行。
+12 'HelloWord'
+13 >>> getattr(t, "age")  #获取一个不存在的属性。
+14 Traceback (most recent call last):
+15   File "<stdin>", line 1, in <module>
+16 AttributeError: test instance has no attribute 'age'
+17 >>> getattr(t, "age","18")  #若属性不存在，返回一个默认值。
+18 '18'

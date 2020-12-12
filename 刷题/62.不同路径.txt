@@ -1,0 +1,13 @@
+1.用排列组合数学公式
+
+2.动态规划 时间复杂度O（m*n）
+
+d【i】【j】=d[i-1][j]+d[i][j-1] 空间复杂度：O（m*n）
+pre【j】 cur【j】  空间复杂度：O（2n）
+d【j】 空间复杂度：O（n）
+codes：
+	d= list( 1 for j in range(n))
+        for i in range(1, m):
+            for j in range(1, n):
+                d[j] = d[j-1] + d[j]
+        return d[-1]

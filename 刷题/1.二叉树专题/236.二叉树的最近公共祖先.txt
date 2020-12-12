@@ -1,0 +1,100 @@
+我写的笨办法已经相当于O（n*n）
+
+方法一：递归+深度遍历。O（n）
+当遇到节点 p 或 q 时，返回一些布尔标记。
+最近祖先：
+1.两个子树递归都返回真标志的节点。
+2.是一个节点，它本身是p或q中的一个，这个节点的子树递归返回一个真标志。
+
+代码：
+class Solution:
+    # Variable to store LCA node.
+    ans = None
+
+    def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+        def recurse_tree(current_node):
+
+            # If reached the end of a branch, return False.
+            if not current_node:
+                return False    
+   		
+            left = recurse_tree(current_node.left)
+            right = recurse_tree(current_node.right)
+
+            # If the current node is one of p or q
+            mid = current_node == p or current_node == q
+
+            # If any two of the three flags left, right or mid become True.
+            if mid + left + right >= 2:
+                self.ans = current_node
+		# 没有办法提前终止递归
+		# 递归返回的是布尔标记。所需节点是通过外围变量来记录的。
+            # Return True if either of the three bool values is True.
+            return mid or left or right
+
+        # Traverse the tree
+        recurse_tree(root)
+        return self.ans
+
+方法二：使用父指针迭代 同样是O（N），但只在最坏的情况下会访问二叉树的所有节点。
+如果每个节点都有父指针，那么我们可以从 p 和 q 返回以获取它们的祖先。
+我们可以在遍历树时将父指针保存在字典中。
+算法：
+从根节点开始遍历树。通过堆栈辅助遍历。
+在找到 p 和 q 之前，将父指针存储在字典中。
+一旦找到了 p 和 q，就可以使用父亲字典获得 p 的所有祖先，并添加到一个称为祖先的集合中。
+我们遍历节点 q 的祖先。如果祖先存在于为 p 设置的祖先中，这意味着这是 p 和 q 之间的第一个共同祖先。
+
+代码：
+class Solution:
+
+    def lowestCommonAncestor(self, root, p, q):
+
+        # Stack for tree traversal
+        stack = [root]
+
+        # Dictionary for parent pointers
+        parent = {root: None}
+
+        # Iterate until we find both the nodes p and q
+        while p not in parent or q not in parent:
+            node = stack.pop()
+            # While traversing the tree, keep saving the parent pointers.
+            if node.left:
+                parent[node.left] = node
+                stack.append(node.left)
+            if node.right:
+                parent[node.right] = node
+                stack.append(node.right)
+        # Ancestors set() for node p.
+        ancestors = set()
+
+        # Process all ancestors for node p using parent pointers.
+        while p:
+            ancestors.add(p)
+            p = parent[p]
+        # The first ancestor of q which appears in
+        # p's ancestor set() is their lowest common ancestor.
+        while q not in ancestors:
+            q = parent[q]
+        return q
+
+方法三：没看懂
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+
+        if not root or root == p or root == q:
+            return root
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+        if not left:
+            return right
+        if not right:
+            return left
+        return root

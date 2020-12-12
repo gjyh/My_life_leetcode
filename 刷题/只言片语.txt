@@ -1,0 +1,179 @@
+# 11.盛最多水的容器
+
+这题最容易想到的就是O（n*n）遍历，虽然仔细分析了各种情况，但还是没跳出这个思路。
+
+双指针法，只需要一遍线性扫描。
+指针初始放置在一头一尾，确保边长最大。然后每次移动高度较小的那条线。
+每一次做出有可能胜于当前状态的选择。
+
+# 14.最长公共前缀
+
+list中所有字符串的最长公共前缀
+水平扫描法 12 23 34
+最坏：所有字符都比较了一遍
+
+# 15.三数之和
+
+排序+双指针
+固定起始元素，后两个数指针遍历
+要跳出选择的思路
+class Solution(object):
+    def threeSum(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        
+        n=len(nums)
+        nums.sort()         #sort the list
+        rl=[]
+        if n<3:             #boundry condition
+            return [];
+        for i in range (0,n-2):         #循环遍历
+            if nums[i]>1:
+                return rl
+            if i>=1 and nums[i]==nums[i-1]:  #跳过重复
+                continue
+            l=i+1; r=n-1;               #双指针赋值
+            while l<r:                          #对每一个起点遍历指针
+                s=nums[i]+nums[l]+nums[r]
+                if s==0:
+                    rl.append([nums[i],nums[l],nums[r]])
+                    l+=1; 
+                    r-=1;
+                    while (l<r and nums[l]==nums[l-1]):
+                        l+=1;
+                    while (l<r and nums[r]==nums[r+1]):
+                        r-=1;
+                elif s>0:
+                    r-=1
+                else:
+                    l+=1
+        return rl
+
+# 78.子集
+
+class Solution(object):
+    def subsets(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+	subset=[[]]
+        for i in range(len(nums)):
+            for sub in subset[:]:
+                subset.append(sub+[nums[i]])
+        return subset
+注意此代码中res[:]是必须的，因为切片是引用新的对象，此时在循环中res[:]是不更新的，而res是不断有元素push进去的，很trick。
+
+此题还可以用回溯法来解决。
+
+# 90.子集II
+
+给定一个可能包含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。
+避免重复很简单，回溯时，若当前元素nums[i]=nums[i-1],continue。这是一个常用的思想。
+
+# 231.2的幂
+给定一个整数，编写一个函数来判断它是否是 2 的幂次方。
+return n>0 and not n & (n-1)
+# 位与运算
+
+# 191.二进制中1的个数
+      用n&（n-1）
+	Ans+=1
+        n=n&(n-1)
+      O(m) m为二进制中1的个数
+      移位
+	    isum+=n&1
+            n=n>>1
+      O(log n)
+
+
+
+# 136.只出现一次的数字。时间复杂度O(n)
+  常规：哈希法。
+        d=dict([])
+        for num in nums:
+            if num in d:
+                d.pop(num)
+            else:
+                d[num]=num
+        
+        return d.keys()[0]
+            
+  异或法：空间复杂度 O（1）
+        a=0
+        for num in nums:
+            a=a^num
+        return a
+
+
+# 169.多数元素
+
+多数元素是指在数组中出现次数大于 n/2 的元素。
+常规思路：hash。也可用于寻找众数。
+
+另一个有趣的思路：boyer-mooer-vote。仅用于寻找多数元素。
+
+学透算法：
+若寻找出现次数大于 n/3 的元素，同样可以使用摩尔投票法，只是候选人增加到两个，遍历中的每个元素只能用于一个候选人投票或配对（独立互斥的四个操作），若没有投票配对操作，即当前元素不等于任意一个候选人时，进行抵消操作。第二遍遍历可以用于验证候选人的计数。n/k 以此类推应有 k-1 个候选人。
+
+	代码：
+        #------------1-------------haxi
+        # d=dict()
+        # half=len(nums)//2
+        # for num in nums:
+        #     if num in d:
+        #         d[num]+=1
+        #     else:
+        #         d[num]=1
+        #     if d[num]>half:
+        #             return num
+        # return num
+        #------------2-------------vote
+        count=0
+        for num in nums:
+            if count==0:
+                candicate=num
+            count+= 1 if num==candicate else -1
+        return candicate
+
+# 155.最小栈
+
+用空间换时间，辅助栈（存储当前最小元素，分为同步和不同步的）。
+同步的可以直接将列表中的元素改为元组。
+class MinStack(object):
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self._L=[]
+        self._min=float('inf')
+
+辅助栈和数据栈不同步的情况：
+（1）辅助栈为空的时候，必须放入新进来的数；
+（2）新来的数小于或者等于辅助栈栈顶元素的时候，才放入。
+特别注意这里“等于”要考虑进去，因为出栈的时候，连续的、相等的并且是最小值的元素要同步出栈；
+（3）出栈的时候，辅助栈的栈顶元素等于数据栈的栈顶元素，才出栈。
+“不同步栈”，虽然减少了一些空间，但是在“出栈”、“入栈”的时候还要做判断，也有性能上的消耗。
+
+# 122.买卖股票的最佳时机 II
+
+贪心策略：
+maxprice=0
+        for j in range(1,length):
+            if prices[j]>prices[j-1]:
+                maxprice+=prices[j]-prices[j-1]
+        return maxprice
+
+本想用动态规划法求解，却失败了。
+应该多练点这样的题目。
+
+# 股票问题终极解法：一个通用方法团灭6道股票问题。
+
+通用条件：限制最大交易次数为 k
+第一题是只进行一次交易，相当于 k = 1；
+第二题是不限交易次数，相当于 k = +infinity（正无穷）；
+第三题是只进行 2 次交易，相当于 k = 2；
+剩下两道也是不限次数，但是加了交易「冷冻期」和「手续费」的额外条件，其实就是第二题的变种，都很容易处理。
+https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-wen/
